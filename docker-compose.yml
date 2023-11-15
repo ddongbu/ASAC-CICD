@@ -1,0 +1,34 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: erd-coupang
+    environment:
+      - MYSQL_ROOT_PASSWORD=inhatc
+      - MYSQL_DATABASE=asac
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - springboot-mysql-net
+
+  lennnnon_cicd:
+    image: lennnnon_cicd
+    build: .
+    ports:
+      - "9000:8080"
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3309/asac?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=inhatc
+    networks:
+      springboot-mysql-net:
+
+networks:
+  springboot-mysql-net:
+
+volumes:
+  mysql_data:
